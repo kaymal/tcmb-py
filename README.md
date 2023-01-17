@@ -1,6 +1,16 @@
 # tcmb
 
+[![PyPI Latest Release](https://img.shields.io/pypi/v/tcmb)](https://pypi.org/project/tcmb/)
+[![License](https://img.shields.io/github/license/kaymal/tcmb-py)](https://github.com/kaymal/tcmb-py/blob/main/LICENSE)
+[![Downloads](https://static.pepy.tech/badge/tcmb)](https://pepy.tech/project/tcmb)
+[![Python Version](https://img.shields.io/pypi/pyversions/tcmb)]()
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 `tcmb` is a Python API wrapper around the Central Bank of the Republic of Türkiye (TCMB) Web Service. It is an _unofficial_ open-source Python package intended for personal use ([Disclaimer](#disclaimer)).
+
+---
+
+_`tcmb`, Türkiye Cumhuriyeti Merkez Bankası (TCMB) Web Servisi'ne Python aracılığıyla erişimi sağlayan resmi olmayan API uygulamasıdır. Kişisel kullanım ve araştırma maksadıyla hazırlanmıştır ([Elektronik Veri Dağıtım Sistemi (EVDS) Kullanım Koşulları](https://evds2.tcmb.gov.tr/help/videos/EVDS_Kullanim_Sartlari.pdf))._
 
 ## Quickstart
 
