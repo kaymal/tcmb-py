@@ -8,14 +8,6 @@ See for details:
 EN: https://evds2.tcmb.gov.tr/help/videos/EVDS_Web_Service_Usage_Guide.pdf
 TR: https://evds2.tcmb.gov.tr/help/videos/EVDS_Web_Servis_Kullanim_Kilavuzu.pdf
 
-TODO
-----
-show a diagram of:
-- Category
-- Data Group
-- Series
-structure
-
 """
 from __future__ import annotations
 from datetime import date
@@ -90,7 +82,26 @@ class Client:
         proxies: dict | None = None,
         **kwargs,
     ):
-        """Get response."""
+        """Get response.
+
+        Parameters
+        ----------
+        params:
+            Request parameters.
+        headers:
+            Request headers.
+        endpoint:
+            TCMB Web Service API endpoint.
+            One of
+            - "categories"
+            - "serieList"
+            - "datagroups"
+            - None
+        proxies:
+            Dictionary mapping protocol to the URL of the proxy.
+        kwargs:
+            Optional keyword arguments that request takes.
+        """
         # Create url for the get request
         #  NOTE: the official api does not use ? for query strings
         #  Therefore the parameters are added to the end of the url
@@ -98,7 +109,7 @@ class Client:
         url = self._create_uri(params=params, endpoint=endpoint)
 
         # Get request
-        res = requests.get(url, headers=headers, proxies=proxies)
+        res = requests.get(url, headers=headers, proxies=proxies, **kwargs)
 
         # Check status
         res.raise_for_status()
@@ -250,7 +261,7 @@ class Client:
 
         # if metadata is true, save metadata info
         # to the .attrs attribute of the DataFrame
-        #   it can be accessed e.g. "df.attrs"
+        #   it can be accessed using attrs: e.g. "df.attrs"
         if metadata:
             attrs: dict[str, dict] = {}
 
@@ -358,11 +369,13 @@ class Client:
 
     @cached_property
     def categories(self):
+        """Get categories metadata and save as a property."""
         return self.get_categories_metadata()
 
     @cached_property
     def datagroups(self):
+        """Get datagroups metadata and save as a property."""
         return self.get_datagroups_metadata()
 
     def __repr__(self) -> str:
-        return f"tcmb Client instance"
+        return "tcmb Client instance"
