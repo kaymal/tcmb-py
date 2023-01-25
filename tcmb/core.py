@@ -19,7 +19,7 @@ import pandas as pd
 import numpy as np
 import requests
 
-from tcmb import const, auth
+from tcmb import const, auth, utils
 
 
 class Client:
@@ -204,7 +204,7 @@ class Client:
             - "Y": 8,      # annual
         seperator:
             Delimiter to use.
-        metadata:  TODO: will be implemented in the next release
+        metadata:
             Whether to read metadata for the series. If True, get requests are
             performed as many as the number of series keys passed. The metadata
             can be accessed using the `.attrs` attribute of the pandas.DataFrame.
@@ -236,6 +236,12 @@ class Client:
         # convert list to str seperated by "-"
         if isinstance(agg, list):
             agg = "-".join(agg)
+
+        # convert date string formats to "DD-MM-YYYY"
+        if start:
+            start = utils.standardize_date(start)
+        if end:
+            end = utils.standardize_date(end)
 
         params = {
             "series": series or "TP.DK.USD.S.YTL",
