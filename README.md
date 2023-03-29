@@ -29,12 +29,15 @@ data = client.read(series="TP.DK.USD.S.YTL")
 ## Overview
 
 ### Data Hiearchy
+
 1. Categories:
 
 Categories are at the top level of the TCMB data hiearchy.
 
 ```python
 client = tcmb.Client(api_key="...")
+
+# show categories
 Client.categories
 
 {'CATEGORY_ID': 1.0,
@@ -50,6 +53,8 @@ Each category consists of a number of data groups.
 
 ```python
 client = tcmb.Client(api_key="...")
+
+# show data groups
 Client.datagroups
 
 [{'DATAGROUP_CODE': 'bie_pyrepo',
@@ -117,6 +122,7 @@ An API key is required to access the Web Service. Users can sign up from the [lo
 
 There are two ways of providing API key to the `tcmb` client.
 - Using environment variables:
+
 ```shell
 $ export TCMB_API_KEY="..."
 ```
@@ -127,6 +133,7 @@ os.environ["TCMB_API_KEY"] = "..."
 ```
 
 - Passing `api_key` when initializing the `Client` class.
+
 ```python
 client = Client(api_key="...")
 ```
