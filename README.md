@@ -76,11 +76,27 @@ It is also possible to filter the datagroups metadata using the `client.get_data
 Datagroups consist of time series, each having a series key such as `TP.YSSK.A1` or `TP.DK.USD.S.YTL`. Series is read using the `.read()` method.
 
 ```python
+import tcmb
+
+client = tcmb.Client(api_key="...")
+
 # read one time series
 data = client.read("TP.YSSK.A1")
 
 # read multiple time series
 data = client.read(["TP.YSSK.A1", "TP.YSSK.A2", "TP.YSSK.A3"])
+```
+
+A convenient way to read time series without initializing the Client instance is using the `read()` function in the `core.py` module.
+
+```python
+import tcmb
+
+# read one time series
+data = tcmb.read("TP.YSSK.A1", api_key="...")
+
+# read multiple time series
+data = tcmb.read(["TP.YSSK.A1", "TP.YSSK.A2", "TP.YSSK.A3"], api_key="...")
 ```
 
 Series metadata can be fetched with `.get_series_metadata()` method.
