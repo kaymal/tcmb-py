@@ -1,8 +1,39 @@
+"""Authentication module."""
 from __future__ import annotations
+import re
 
 import requests
+from requests.exceptions import HTTPError
 
 from tcmb.errors import ApiKeyError
+
+
+def _extract_error_message(response):
+    """Extract error message from the html body"""
+    # Extract error message from the html body
+    pattern = r"<body>(.*?)</body>"
+    error_msgs = re.findall(pattern, str(response.content))
+    error_msg = error_msgs[0].strip("\\rn")
+
+    return error_msg
+
+
+def check_status(response):
+    """Check if response is ok and authentication is done."""
+    if response.status_code != 200:
+        try:
+            response.raise_for_status()
+        except HTTPError as err:
+            # get error message
+            error_msg = _extract_error_message(response)
+            print(f"Response Error Message: {error_msg}")
+
+            # evds responds with an 500 Internal Server Error for almost
+            # any issues. This error response is a generic "catch-all" response.
+            # Therefore the traceback is printed as well as the most
+            # probable cause of the HTTPError: ApiKeyError
+            print(err.with_traceback(None))
+            raise ApiKeyError("API key is invalid.") from err
 
 
 def check_api_key(api_key: str | None = None) -> bool:
@@ -22,12 +53,7 @@ def check_api_key(api_key: str | None = None) -> bool:
     res = requests.get(
         f"https://evds2.tcmb.gov.tr/service/evds/categories/key={api_key}"
     )
-    # check if response is ok
-    if res.status_code != 200:
-        try:
-            res.raise_for_status()
-        except Exception as err:
-            print(err.with_traceback(None))
-            raise ApiKeyError("API key is invalid.")
+    # check if authenticated
+    check_status(res)
 
     return True
