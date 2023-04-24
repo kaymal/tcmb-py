@@ -377,6 +377,12 @@ class Client:
         datagroup:
             Data group code. eg. "bie_yssk".
             One of `series` or `code` must be passed.
+
+        Returns
+        -------
+        One of
+        - Dict of metadata of one time series
+        - List of multiple metadata of multiple time series
         """
         if (series is None) and (datagroup is None):
             raise ValueError("One of `series` or `code` arguments must be passed.")
