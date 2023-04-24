@@ -1,14 +1,16 @@
 # tcmb
 
 ### TODO
-- [ ] Add standalone reader that would work without creating the Client class instance.
+- [x] Add standalone reader that would work without creating the Client class instance
 - [ ] Save categories and datagroups metadata as package data for quicker lookup
+- [ ] Wildcard option for series
+- [ ] Release 0.3.0
 
 ### BACKLOG
-- [ ] Wildcard option for series
-- [ ] Consider using requests Session
-- [ ] Add CLI download option
+- [ ] Add CLI download option (csv, long/wide format)
 - [ ] Add plotting module
+- [ ] Consider using requests Session
+- [ ] Consider adding asyncio support
 
 ### Done
 - [x] Initial release
