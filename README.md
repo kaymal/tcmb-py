@@ -28,11 +28,11 @@ data = client.read(series="TP.DK.USD.S.YTL")
 
 ## Overview
 
-### Data Hiearchy
+### Data Hierarchy
 
 1. Categories:
 
-Categories are at the top level of the TCMB data hiearchy.
+Categories are at the top level of the TCMB data hierarchy.
 
 ```python
 client = tcmb.Client(api_key="...")
@@ -125,6 +125,10 @@ client.get_series_metadata(series="TP.YSSK.A1")
   'SERIE_NAME_ENG': '1-2 Years(USD)',
   ...}]
 ```
+
+## Wildcard Characters
+
+The wildcard characters are represented as an asterisk `*` or a question mark `?`. The asterisk `*` represents any number of characters, while the question mark `?` represents a single character. Additionally, omitting the value has the same effect as using an asterisk. Note that, wildcard character option is not a feature of TCMB web service. Wildcard pattern search is implemented within the `tcmb` package and depends on the package data.
 
 ## Installation
 

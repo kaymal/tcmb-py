@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "tcmb"
-version = "0.2.0"
+version = "0.3.0"
 authors = [{ name = "Kaymal", email = "gutkyle@gmail.com" }]
 description = "Central Bank of the Republic of Türkiye (TCMB) Python API."
 readme = "README.md"
@@ -22,6 +22,11 @@ dependencies = ["pandas", "numpy", "requests"]
 
 [project.urls]
 repository = "https://github.com/kaymal/tcmb-py"
+pypi = "https://pypi.org/project/tcmb"
 
-[tool.setuptools]
-packages = ["tcmb"]
+[tool.setuptools.packages.find]
+include = ["tcmb"]
+namespaces = true
+
+[tool.setuptools.package-data]
+"tcmb.resources" = ["*"]
