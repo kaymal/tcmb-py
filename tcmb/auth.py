@@ -3,9 +3,9 @@ from __future__ import annotations
 import re
 
 import requests
-from requests.exceptions import HTTPError
+from requests.exceptions import HTTPError, JSONDecodeError
 
-from tcmb.errors import ApiKeyError
+from tcmb.errors import ApiKeyError, InvalidSeriesCode
 
 
 def _extract_error_message(response):
@@ -34,6 +34,15 @@ def check_status(response):
             # probable cause of the HTTPError: ApiKeyError
             print(err.with_traceback(None))
             raise ApiKeyError("API key is invalid.") from err
+    else:
+        try:
+            response.json()
+        except JSONDecodeError:
+            if "error-title" in response.text:
+                raise InvalidSeriesCode()
+            else:
+                print("Cannot convert response to JSON")
+                raise
 
 
 def check_api_key(api_key: str | None = None) -> bool:
