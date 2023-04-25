@@ -36,7 +36,11 @@ def read(
     Parameters
     ----------
     series:
-        Time series key. e.g. "TP.DK.USD.S.YTL"
+        Time series key. If str, wildcard characters (*) and (?) can be used.
+        The wildcard characters are represented as an asterisk (*)
+        or a question mark (?). The asterisk (*) represents any number of characters,
+        while the question mark (?) represents a single character.
+        Additionally, omitting the value has the same effect as using an asterisk.
     start: str or datetime-like
         Start date of the series in DD-MM-YYYY, YYYY-MM-DD, or datetime-like
         format.
@@ -94,14 +98,25 @@ def read(
     -------
     import tcmb
 
-    df = tcmb.read(["...", "..."])
+    # read one series
+    df = tcmb.read("TP.DK.USD.S.YTL")
 
+    # read multiple series
+    df = tcmb.read(["TP.DK.USD.S.YTL", "TP.DK.EUR.S.YTL"])
+
+    # read series with wildcarding
+    df = tcmb.read("TP.DK.*.S.YTL"])
     """
     api_key = api_key or os.environ.get("TCMB_API_KEY")
 
     # convert freq string to
     if isinstance(freq, str):
         freq = const.FREQ_MAPPING[freq]
+
+    # wildcard search if any of the following case
+    if isinstance(series, str):
+        if ("*" in series) or ("?" in series) or (".." in series):
+            series = utils.wildcard_search(series)
 
     # convert list to str seperated by "-"
     # as descibed in the api reference

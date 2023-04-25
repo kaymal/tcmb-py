@@ -1,6 +1,9 @@
 """Utilities module."""
+import json
 import re
+import os.path
 from datetime import datetime
+
 
 import numpy as np
 import pandas as pd
@@ -70,3 +73,74 @@ def to_dataframe(data: dict) -> pd.DataFrame:
     df = df.dropna(how="all")
 
     return df
+
+
+def wildcard_search(
+    pattern: str, items: list | None = None, use_package_data: bool = True
+) -> list:
+    """Search for items using regex pattern that can contain wildcard characters.
+
+    Parameters
+    ----------
+    pattern:
+        The regex pattern to use for searching, which may contain wildcard
+        characters. The wildcard characters are represented as an asterisk (*)
+        or a question mark (?). The asterisk (*) represents any number of characters,
+        while the question mark (?) represents a single character.
+        Additionally, omitting the value has the same effect as using an asterisk.
+    items:
+        Use the list of items to search through. If None, items in the
+        package data is used. Note that package data may not be up to date.
+        The user can choose to fetch series data from TCMB instead of
+        using the flat file in package data by using the "update" parameter.
+    use_package_data:
+        Whether to use package resources or fetch all series keys from
+        the TCMB database. If False, fetching may take up to 5 minutes.
+
+    Returns
+    -------
+    A list of items that match the regex pattern.
+
+    Example
+    -------
+    >>> wildcard_search('TP.API.REP.TL.*', items=items)
+    ['TP.API.REP.TL.A12',
+     'TP.API.REP.TL.A23',
+     'TP.API.REP.TL.G1',
+     'TP.API.REP.TL.G1530',
+     'TP.API.REP.TL.G214']
+
+    >>> wildcard_search('TP.API.REP.TL.A??', items=items)
+    ['TP.API.REP.TL.A12', 'TP.API.REP.TL.A23']
+
+    """
+    if items is None:
+        items = []
+
+        if use_package_data:
+            file_path = os.path.join(
+                os.path.dirname(__file__), "resources", "series.json"
+            )
+
+            with open(file_path, "r") as file:
+                dg_series = json.load(file)
+
+        else:
+            from tcmb._data import fetch_dg_series_codes
+
+            dg_series = fetch_dg_series_codes()
+
+        # merge series of all datagroups into one list
+        for item in dg_series.values():
+            items.extend(item)
+
+    # Replace the wildcard characters with a regex-friendly equivalent.
+    pattern = pattern.replace("*", ".*").replace("?", ".")
+
+    # Compile the regex pattern for efficiency.
+    compiled_regex = re.compile(pattern)
+
+    # Use list comprehension to find matching items.
+    matching_items = [item for item in items if compiled_regex.search(item)]
+
+    return matching_items
