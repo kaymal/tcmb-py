@@ -130,6 +130,15 @@ client.get_series_metadata(series="TP.YSSK.A1")
 
 The wildcard characters are represented as an asterisk `*` or a question mark `?`. The asterisk `*` represents any number of characters, while the question mark `?` represents a single character. Additionally, omitting the value has the same effect as using an asterisk. Note that, wildcard character option is not a feature of TCMB web service. Wildcard pattern search is implemented within the `tcmb` package and depends on the package data.
 
+```python
+>>> data = tcmb.read("TP.DK.USD.*.YTL")
+>>> print(data.columns)
+
+Index(['TP_DK_USD_A_YTL', 'TP_DK_USD_S_YTL', 'TP_DK_USD_C_YTL',
+       'TP_DK_USD_A_EF_YTL', 'TP_DK_USD_S_EF_YTL'],
+      dtype='object')
+```
+
 ## Installation
 
 ```sh
