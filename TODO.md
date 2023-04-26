@@ -1,6 +1,7 @@
 # tcmb
 
 ### TODO
+- [ ] Add project page to GitHub pages
 - [ ] Add CLI download option (csv, long/wide format)
 
 
