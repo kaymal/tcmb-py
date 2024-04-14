@@ -82,7 +82,8 @@ def read(
         API key of the user. If None, environment variable with
         the name "TCMB_API_KEY" will be used to as the api_key. If
         the api_key argument is not passed or it is not exported to the
-        environment, ApiKeyError is raised.
+        environment, ApiKeyError is raised. EVDS Web Service accepts API Key
+        as a request header in the format {"key": api_key}.
     **kwargs:
         Keyword arguments passed to the request.
 
@@ -139,12 +140,17 @@ def read(
         "endDate": end or date.today().strftime("%d-%m-%Y"),
         "type": "json",  # csv, xml, json
         "aggregationTypes": agg,
-        "key": api_key,
         "formulas": formulas,
         "frequency": freq,
         "decimalSeperator": seperator,
         **kwargs,
     }
+
+    # add api_key to request header
+    if headers is None:
+        headers = {"key": api_key}
+    elif "key" not in headers:
+        headers["key"] = api_key
 
     res = fetch.get_response(params=params, headers=headers)
 
@@ -303,7 +309,7 @@ class Client:
         #   it can be accessed using attrs: e.g. "df.attrs"
         if metadata:
             attrs: dict[str, dict] = {}
-
+            # TODO: update for the case of list of series
             for series_item in series.split("-"):
                 attrs[series_item] = self.get_series_metadata(series_item)
 
@@ -313,12 +319,12 @@ class Client:
 
     def get_categories_metadata(self):
         """Get the list of the metadata of all categories."""
-        params = {
-            "type": "json",
-            "key": self.api_key,
-        }
+        params = {"type": "json"}
 
-        res = self._get_response(params=params, endpoint="categories")
+        # add api_key to request header
+        headers = {"key": self.api_key}
+
+        res = self._get_response(params=params, endpoint="categories", headers=headers)
 
         return res.json()
 
@@ -356,10 +362,12 @@ class Client:
             "mode": str(mode),
             "code": code,
             "type": "json",
-            "key": self.api_key,
         }
 
-        res = self._get_response(params=params, endpoint="datagroups")
+        # add api_key to request header
+        headers = {"key": self.api_key}
+
+        res = self._get_response(params=params, endpoint="datagroups", headers=headers)
 
         json_data = res.json()
 
@@ -405,10 +413,12 @@ class Client:
         params = {
             "code": series or datagroup,
             "type": "json",
-            "key": self.api_key,
         }
 
-        res = self._get_response(params=params, endpoint="serieList")
+        # add api_key to request header
+        headers = {"key": self.api_key}
+
+        res = self._get_response(params=params, endpoint="serieList", headers=headers)
 
         return res.json()
 
