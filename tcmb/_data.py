@@ -25,7 +25,7 @@ def fetch_dg_series_codes() -> dict:
     dg_codes = [dg["DATAGROUP_CODE"] for dg in client.datagroups]
 
     # There are 439 data groups as of 2023-04-25
-    print(f"There are {len(dg_codes)} in total.")
+    print(f"There are {len(dg_codes)} items in total.")
 
     dg_series = {}
     for dg_code in dg_codes:
@@ -44,7 +44,11 @@ def fetch_dg_series_codes() -> dict:
 
 
 def _update_package_data():
-    """Update package resources."""
+    """Update package resources.
+
+    This function is to be used by the maintainer to syncronize
+    package data with the current data available on EVDS Web Service.
+    """
     dg_series = fetch_dg_series_codes()
 
     file_path = os.path.join(os.path.dirname(__file__), "resources", "series.json")
