@@ -59,8 +59,12 @@ def check_api_key(api_key: str | None = None) -> bool:
     if api_key is None:
         raise ApiKeyError("No API key provided.")
 
+    headers = {"key": api_key}
+
     res = requests.get(
-        f"https://evds2.tcmb.gov.tr/service/evds/categories/key={api_key}"
+        "https://evds2.tcmb.gov.tr/service/evds/categories/type=json",
+        headers=headers,
+        timeout=30,
     )
     # check if authenticated
     check_status(res)
