@@ -5,6 +5,7 @@
 [![Downloads](https://static.pepy.tech/badge/tcmb)](https://pepy.tech/project/tcmb)
 [![Python Version](https://img.shields.io/pypi/pyversions/tcmb)]()
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+![Package workflow](https://github.com/kaymal/tcmb-py/actions/workflows/python-package.yml/badge.svg)
 
 `tcmb` is a Python API wrapper around the Central Bank of the Republic of Türkiye (TCMB) Web Service. It is an _unofficial_ open-source Python package intended for personal use ([Disclaimer](#disclaimer)).
 
