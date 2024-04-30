@@ -33,7 +33,9 @@ def check_status(response):
             # Therefore the traceback is printed as well as the most
             # probable cause of the HTTPError: ApiKeyError
             print(err.with_traceback(None))
-            raise ApiKeyError("API key is invalid.") from err
+            raise ApiKeyError(
+                "API key is invalid or wrong key. See error message for details."
+            ) from err
     else:
         try:
             response.json()
