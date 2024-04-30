@@ -122,7 +122,9 @@ def read(
     # convert list to str seperated by "-"
     # as descibed in the api reference
     if isinstance(series, list):
-        series = "-".join(series)
+        series_str = "-".join(series)
+    else:
+        series_str = series
 
     # convert list to str seperated by "-"
     if isinstance(agg, list):
@@ -135,7 +137,7 @@ def read(
         end = utils.standardize_date(end)
 
     params = {
-        "series": series,
+        "series": series_str,
         "startDate": start or "01-01-1970",
         "endDate": end or date.today().strftime("%d-%m-%Y"),
         "type": "json",  # csv, xml, json
@@ -156,7 +158,7 @@ def read(
 
     # convert response JSON to DataFrame
     #   time series data is in the "items"
-    data = utils.to_dataframe(res.json()["items"])
+    data = utils.to_dataframe(res.json()["items"], series=series)
 
     return data
 
