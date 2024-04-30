@@ -10,6 +10,8 @@ from datetime import datetime
 import numpy as np
 import pandas as pd
 
+from tcmb._data import fetch_dg_series_codes
+
 
 def standardize_date(date_str: str) -> str:
     """Standardize date string format to output DD-MM-YYYY.
@@ -45,14 +47,22 @@ def standardize_date(date_str: str) -> str:
     return datetime.strptime(date_str, date_format).strftime("%d-%m-%Y")
 
 
-def to_dataframe(data: dict) -> pd.DataFrame:
+def to_dataframe(data: dict, series: str | list) -> pd.DataFrame:
     """Convert data from the json response to pandas DataFrame."""
+    if isinstance(series, str):
+        series = [series]
+
+    # generate column names from series keys by replacing "." with "_"
+    # these columns will be selected as the value columns
+    # the columns other than date (Tarih) and value columns will be dropped
+    value_cols = [col.replace(".", "_") for col in series]
+
     df = pd.DataFrame(data)
     # drop unused column
-    df = df.drop("UNIXTIME", axis=1)
+    df = df[["Tarih", *value_cols]]
     # set date as index
-    # TODO: check if "Tarih" always the first column
-    df = df.set_index(df.columns[0])
+    # TODO: check if "Tarih" always the date column
+    df = df.set_index("Tarih")
 
     # detect date format
     if re.match(r"\d+-\d+-\d{4}", df.index[0]):
@@ -63,6 +73,7 @@ def to_dataframe(data: dict) -> pd.DataFrame:
         date_format = "%Y-%m"
     elif re.match(r"\d{4}", df.index[0]):
         date_format = "%Y"
+
     # convert date strings to datetime
     df.index = pd.to_datetime(df.index, format=date_format)
 
@@ -128,8 +139,6 @@ def wildcard_search(
                 dg_series = json.load(file)
 
         else:
-            from tcmb._data import fetch_dg_series_codes
-
             dg_series = fetch_dg_series_codes()
 
         # merge series of all datagroups into one list
