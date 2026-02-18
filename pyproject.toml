@@ -1,32 +1,63 @@
 [build-system]
-requires = ["setuptools", "setuptools-scm"]
+requires = ["setuptools>=61", "setuptools_scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
 name = "tcmb"
-version = "0.4.1"
+version = "0.5.0"
 authors = [{ name = "Kaymal", email = "gutkyle@gmail.com" }]
-description = "Central Bank of the Republic of Türkiye (TCMB) Python API."
+description = "A Python client for the Central Bank of the Republic of Türkiye (TCMB) EVDS-API."
 readme = "README.md"
 license = { file = 'LICENSE' }
 requires-python = ">=3.8"
+keywords = ["tcmb", "evds", "api", "client", "python", "financial data", "currency", "exchange rates", "central bank", "turkey"]
 classifiers = [
     'Operating System :: OS Independent',
     "Programming Language :: Python :: 3",
-    'Programming Language :: Python :: 3.8',
-    'Programming Language :: Python :: 3.9',
     'Programming Language :: Python :: 3.10',
     'Programming Language :: Python :: 3.11',
+    'Programming Language :: Python :: 3.12',
+    'Programming Language :: Python :: 3.13',
 ]
-dependencies = ["pandas", "numpy", "requests"]
+dependencies = [
+    "pandas",
+    "numpy",
+    "requests",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+    "ruff",
+    "mypy",
+    "pre-commit",
+    "pandas-stubs",
+    "types-requests",
+]
+ide = [
+    "ipykernel",
+    "jupyterlab",
+]
 
 [project.urls]
 repository = "https://github.com/kaymal/tcmb-py"
 pypi = "https://pypi.org/project/tcmb"
 
 [tool.setuptools.packages.find]
-include = ["tcmb"]
-namespaces = true
+where = ["src"]
 
 [tool.setuptools.package-data]
-"tcmb.resources" = ["*"]
+tcmb = ["resources/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.black]
+line-length = 120
+target-version = ["py313"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py313"

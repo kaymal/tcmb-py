@@ -11,12 +11,15 @@
 
 ---
 
-_`tcmb`, Türkiye Cumhuriyeti Merkez Bankası (TCMB) Web Servisi'ne Python aracılığıyla erişimi sağlayan resmi olmayan API uygulamasıdır. Kişisel kullanım ve araştırma maksadıyla hazırlanmıştır ([Elektronik Veri Dağıtım Sistemi (EVDS) Kullanım Koşulları](https://evds2.tcmb.gov.tr/help/videos/EVDS_Kullanim_Sartlari.pdf))._
+_`tcmb`, Türkiye Cumhuriyeti Merkez Bankası (TCMB) Web Servisi'ne Python aracılığıyla erişimi sağlayan resmi olmayan API uygulamasıdır. Kişisel kullanım ve araştırma maksadıyla hazırlanmıştır ([Elektronik Veri Dağıtım Sistemi (EVDS) Kullanım Koşulları](https://evds3.tcmb.gov.tr/igmevdsms-dis/documents/showDocument?docId=18))._
 
 ## Quickstart
 
 ```shell
 pip install tcmb
+
+# or with uv
+uv add tcmb
 ```
 
 ```python
@@ -39,7 +42,7 @@ Categories are at the top level of the TCMB data hierarchy.
 client = tcmb.Client(api_key="...")
 
 # show categories
-Client.categories
+client.categories
 
 {'CATEGORY_ID': 1.0,
  'TOPIC_TITLE_ENG': 'MARKET STATISTICS',
@@ -48,7 +51,7 @@ Client.categories
 
 It is also possible to get the same information using the `client.get_categories_metadata()` method.
 
-2. Data Groups: 
+2. Data Groups:
 
 Each category consists of a number of data groups.
 
@@ -56,7 +59,7 @@ Each category consists of a number of data groups.
 client = tcmb.Client(api_key="...")
 
 # show data groups
-Client.datagroups
+client.datagroups
 
 [{'DATAGROUP_CODE': 'bie_pyrepo',
   'CATEGORY_ID': 1,
@@ -74,7 +77,7 @@ It is also possible to filter the datagroups metadata using the `client.get_data
 
 3. Series
 
-Datagroups consist of time series, each having a series key such as `TP.YSSK.A1` or `TP.DK.USD.S.YTL`. Series is read using the `.read()` method.
+Datagroups consist of time series, each with a series key such as `TP.YSSK.A1` or `TP.DK.USD.S.YTL`. Series can be read using the `.read()` method.
 
 ```python
 import tcmb
@@ -88,7 +91,7 @@ data = client.read("TP.YSSK.A1")
 data = client.read(["TP.YSSK.A1", "TP.YSSK.A2", "TP.YSSK.A3"])
 ```
 
-A convenient way to read time series without initializing the Client instance is using the `read()` function in the `core.py` module.
+A convenient way to read time series without initializing a `Client` instance is to use the package-level `read()` function.
 
 ```python
 import tcmb
@@ -100,7 +103,7 @@ data = tcmb.read("TP.YSSK.A1", api_key="...")
 data = tcmb.read(["TP.YSSK.A1", "TP.YSSK.A2", "TP.YSSK.A3"], api_key="...")
 ```
 
-Series metadata can be fetched with `.get_series_metadata()` method.
+Series metadata can be fetched with the `.get_series_metadata()` method.
 
 ```python
 # show metadata of each series within a data group
@@ -129,7 +132,7 @@ client.get_series_metadata(series="TP.YSSK.A1")
 
 ## Wildcard Characters
 
-The wildcard characters are represented as an asterisk `*` or a question mark `?`. The asterisk `*` represents any number of characters, while the question mark `?` represents a single character. Additionally, omitting the value has the same effect as using an asterisk. Note that, wildcard character option is not a feature of TCMB web service. Wildcard pattern search is implemented within the `tcmb` package and depends on the package data.
+Wildcard characters are `*` and `?`. The asterisk `*` matches zero or more characters, and the question mark `?` matches exactly one character. Additionally, omitting a value has the same effect as using an asterisk. Note that wildcard support is not a feature of the TCMB web service itself; pattern matching is implemented inside `tcmb` package and depends on package data.
 
 ```python
 >>> data = tcmb.read("TP.DK.USD.*.YTL")
@@ -144,13 +147,16 @@ Index(['TP_DK_USD_A_YTL', 'TP_DK_USD_S_YTL', 'TP_DK_USD_C_YTL',
 
 ```sh
 pip install tcmb
+
+# or with uv
+uv add tcmb
 ```
 
 ## Authentication
 
-An API key is required to access the Web Service. Users can sign up from the [login](https://evds2.tcmb.gov.tr/index.php?/evds/login) page. Once logged in, API Key is generated from the Profile page.
+An API key is required to access the web service. Users can sign up on the [login](https://evds3.tcmb.gov.tr/login) page. After signing in, generate an API key from the Profile page.
 
-There are two ways of providing API key to the `tcmb` client.
+There are two ways to provide an API key to `tcmb`.
 - Using environment variables:
 
 ```shell
@@ -165,8 +171,13 @@ os.environ["TCMB_API_KEY"] = "..."
 - Passing `api_key` when initializing the `Client` class.
 
 ```python
-client = Client(api_key="...")
+import tcmb
+
+client = tcmb.Client(api_key="...")
+
+# optional: override EVDS base URL
+client = tcmb.Client(api_key="...", base_url="https://evds3.tcmb.gov.tr/igmevdsms-dis/)
 ```
 
 ## Disclaimer
-`tcmb` is an **unofficial** open-source package intended for personal use and research purposes. Please see TCMB's [EVDS Disclaimer](https://evds2.tcmb.gov.tr/help/videos/EVDS_Disclaimer.pdf) for the official terms of use of the EVDS Web Service.
+`tcmb` is an **unofficial** open-source package intended for personal use and research purposes. Please see TCMB's [EVDS Disclaimer](https://evds3.tcmb.gov.tr/igmevdsms-dis/documents/showDocument?docId=18) for the official terms of use of the EVDS Web Service.
