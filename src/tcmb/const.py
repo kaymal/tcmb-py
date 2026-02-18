@@ -1,4 +1,6 @@
 # freq_str : freq_id mapping
+BASE_URL = "https://evds3.tcmb.gov.tr/igmevdsms-dis/"
+
 FREQ_MAPPING = {
     "D": 1,  # daily
     "B": 2,  # business daily

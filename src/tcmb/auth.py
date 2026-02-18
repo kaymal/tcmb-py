@@ -1,10 +1,12 @@
 """Authentication module."""
+
 from __future__ import annotations
 import re
 
 import requests
 from requests.exceptions import HTTPError, JSONDecodeError
 
+from tcmb import const
 from tcmb.errors import ApiKeyError, InvalidSeriesCode
 
 
@@ -33,9 +35,7 @@ def check_status(response):
             # Therefore the traceback is printed as well as the most
             # probable cause of the HTTPError: ApiKeyError
             print(err.with_traceback(None))
-            raise ApiKeyError(
-                "API key is invalid or wrong key. See error message for details."
-            ) from err
+            raise ApiKeyError("API key is invalid or wrong key. See error message for details.") from err
     else:
         try:
             response.json()
@@ -47,7 +47,7 @@ def check_status(response):
                 raise
 
 
-def check_api_key(api_key: str | None = None) -> bool:
+def check_api_key(api_key: str | None = None, base_url: str | None = None) -> bool:
     """Check API key.
 
     TCMB Web Service does not provide a way to check the api key.
@@ -57,14 +57,17 @@ def check_api_key(api_key: str | None = None) -> bool:
     Parameters
     ----------
     api_key:
+    base_url:
+        Base URL of the EVDS API.
     """
     if api_key is None:
         raise ApiKeyError("No API key provided.")
 
     headers = {"key": api_key}
+    url = (base_url or const.BASE_URL).rstrip("/")
 
     res = requests.get(
-        "https://evds2.tcmb.gov.tr/service/evds/categories/type=json",
+        f"{url}/categories/type=json",
         headers=headers,
         timeout=30,
     )

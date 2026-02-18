@@ -3,12 +3,14 @@ from __future__ import annotations
 
 import requests
 
-from tcmb import auth
+from tcmb import auth, const
 
-URL = "https://evds2.tcmb.gov.tr/service/evds"
+URL = const.BASE_URL
 
 
-def _create_uri(params: dict, endpoint: str | None = None) -> str:
+def _create_uri(
+    params: dict, endpoint: str | None = None, base_url: str | None = None
+) -> str:
     """Create URI using the params and the evds url.
 
     The official api does not use `?` for query strings.
@@ -25,7 +27,11 @@ def _create_uri(params: dict, endpoint: str | None = None) -> str:
         - "serieList"
         - "datagroups"
         - None
+    base_url:
+        Base URL of the EVDS API.
     """
+    resolved_base_url = (base_url or const.BASE_URL).rstrip("/")
+
     if endpoint is not None:
         endpoint = endpoint + "/"
     else:
@@ -36,7 +42,7 @@ def _create_uri(params: dict, endpoint: str | None = None) -> str:
     #       however, this keeps None values
     query_str = "&".join([k + "=" + str(v) for k, v in params.items() if v is not None])
 
-    return f"{URL}/{endpoint}{query_str}"
+    return f"{resolved_base_url}/{endpoint}{query_str}"
 
 
 def get_response(
@@ -44,6 +50,7 @@ def get_response(
     headers: dict | None = None,
     endpoint: str | None = None,
     proxies: dict | None = None,
+    base_url: str | None = None,
     **kwargs,
 ):
     """Get response.
@@ -63,6 +70,8 @@ def get_response(
         - None
     proxies:
         Dictionary mapping protocol to the URL of the proxy.
+    base_url:
+        Base URL of the EVDS API.
     kwargs:
         Optional keyword arguments that request takes.
     """
@@ -70,7 +79,7 @@ def get_response(
     #  NOTE: the official api does not use ? for query strings
     #  Therefore the parameters are added to the end of the url
     #  instead of passing to the get request as params
-    url = _create_uri(params=params, endpoint=endpoint)
+    url = _create_uri(params=params, endpoint=endpoint, base_url=base_url)
 
     # Get request
     res = requests.get(url, headers=headers, proxies=proxies, **kwargs)
