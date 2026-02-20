@@ -5,10 +5,10 @@ Turkish Central Bank's (TCMB) EVDS Web Service.
 
 See for details:
 ----------------
-EN: https://evds2.tcmb.gov.tr/help/videos/EVDS_Web_Service_Usage_Guide.pdf
-TR: https://evds2.tcmb.gov.tr/help/videos/EVDS_Web_Servis_Kullanim_Kilavuzu.pdf
+https://evds3.tcmb.gov.tr/dokumanlar
 
 """
+
 from __future__ import annotations
 from datetime import date
 from functools import cached_property
@@ -29,6 +29,7 @@ def read(
     seperator: str = ".",
     headers: dict | None = None,
     api_key: str | None = None,
+    base_url: str | None = None,
     **kwargs,
 ) -> pd.DataFrame:
     """Read data from TCMB's EVDS Web Service.
@@ -84,6 +85,8 @@ def read(
         the api_key argument is not passed or it is not exported to the
         environment, ApiKeyError is raised. EVDS Web Service accepts API Key
         as a request header in the format {"key": api_key}.
+    base_url:
+        Base URL of the EVDS API. If None, EVDS 3 default URL is used.
     **kwargs:
         Keyword arguments passed to the request.
 
@@ -93,7 +96,7 @@ def read(
 
     References
     ----------
-    - https://evds2.tcmb.gov.tr/help/videos/EVDS_Web_Service_Usage_Guide.pdf
+    - https://evds3.tcmb.gov.tr/dokumanlar
 
     Example
     -------
@@ -109,6 +112,7 @@ def read(
     df = tcmb.read("TP.DK.*.S.YTL"])
     """
     api_key = api_key or os.environ.get("TCMB_API_KEY")
+    base_url = base_url or const.BASE_URL
 
     # convert freq string to
     if isinstance(freq, str):
@@ -154,7 +158,7 @@ def read(
     elif "key" not in headers:
         headers["key"] = api_key
 
-    res = fetch.get_response(params=params, headers=headers)
+    res = fetch.get_response(params=params, headers=headers, base_url=base_url)
 
     # convert response JSON to DataFrame
     #   time series data is in the "items"
@@ -173,14 +177,17 @@ class Client:
         the name "TCMB_API_KEY" will be used to as the api_key. If
         the api_key argument is not passed or it is not exported to the
         environment, ApiKeyError is raised.
+    base_url:
+        Base URL of the EVDS API. If None, EVDS 3 default URL is used.
     """
 
-    def __init__(self, api_key: str | None = None):
+    def __init__(self, api_key: str | None = None, base_url: str | None = None):
         self.api_key = api_key or os.environ.get("TCMB_API_KEY")
-        auth.check_api_key(self.api_key)
+        self.base_url = base_url or const.BASE_URL
+        auth.check_api_key(self.api_key, base_url=self.base_url)
 
-    @staticmethod
     def _get_response(
+        self,
         params: dict,
         headers: dict | None = None,
         endpoint: str | None = None,
@@ -212,6 +219,7 @@ class Client:
             headers=headers,
             endpoint=endpoint,
             proxies=proxies,
+            base_url=self.base_url,
             **kwargs,
         )
 
@@ -287,7 +295,7 @@ class Client:
 
         References
         ----------
-        - https://evds2.tcmb.gov.tr/help/videos/EVDS_Web_Service_Usage_Guide.pdf
+        - https://evds3.tcmb.gov.tr/dokumanlar
 
         Example
         -------
@@ -303,6 +311,7 @@ class Client:
             seperator=seperator,
             headers=headers,
             api_key=self.api_key,
+            base_url=self.base_url,
             **kwargs,
         )
 
@@ -330,9 +339,7 @@ class Client:
 
         return res.json()
 
-    def get_datagroups_metadata(
-        self, mode: int = 0, code: str | int | None = None
-    ) -> pd.DataFrame:
+    def get_datagroups_metadata(self, mode: int = 0, code: str | int | None = None) -> pd.DataFrame:
         """Get datagroups metadata.
 
         The metadata of the datagroups include the following:
@@ -375,16 +382,11 @@ class Client:
 
         # if no data (empty response)
         if not json_data:
-            raise ValueError(
-                "No data on respose, check `mode` and `code` parameters.\n"
-                f"Response: {res.content}"
-            )
+            raise ValueError("No data on respose, check `mode` and `code` parameters.\n" f"Response: {res.content}")
 
         return json_data
 
-    def get_series_metadata(
-        self, series: str | None = None, datagroup: str | None = None
-    ) -> dict | list[dict]:
+    def get_series_metadata(self, series: str | None = None, datagroup: str | None = None) -> dict | list[dict]:
         """Get the metadata of the series.
 
         The metadata of the series include the following:

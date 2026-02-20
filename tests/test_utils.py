@@ -1,7 +1,6 @@
-from tcmb import utils
-
 import pytest
 
+from tcmb import utils
 
 test_date_data = [
     ("01-01-2024", "01-01-2024"),
@@ -14,7 +13,6 @@ test_date_data = [
 @pytest.mark.parametrize("date_str, expected", test_date_data)
 def test_standardize_date(date_str, expected):
     result = utils.standardize_date(date_str)
-    print(result)
     assert result == expected
 
 
@@ -28,4 +26,4 @@ def test_wildcard_search():
     ]
     items = utils.wildcard_search("TP.API.REP.TL.*")
 
-    assert all(item in items_expected for item in items)
+    assert set(items) == set(items_expected)

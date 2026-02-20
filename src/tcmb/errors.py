@@ -13,12 +13,8 @@ class InvalidSeriesCode(ValueError):
 
     def __init__(
         self,
-        msg=(
-            "Invalid series code! "
-            "One of the series codes is not valid, "
-            "or there are too many codes."
-        ),
+        msg=("Invalid series code! " "One of the series codes is not valid, " "or there are too many codes."),
         *args,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(msg, *args, **kwargs)
