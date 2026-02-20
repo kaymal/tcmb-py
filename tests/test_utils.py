@@ -1,7 +1,6 @@
-from tcmb import utils
-
 import pytest
 
+from tcmb import utils
 
 test_date_data = [
     ("01-01-2024", "01-01-2024"),

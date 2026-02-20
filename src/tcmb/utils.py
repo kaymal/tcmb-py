@@ -1,11 +1,11 @@
 """Utilities module."""
+
 from __future__ import annotations
 
 import json
 import re
 import os.path
 from datetime import datetime
-
 
 import numpy as np
 import pandas as pd
@@ -88,9 +88,7 @@ def to_dataframe(data: dict, series: str | list) -> pd.DataFrame:
     return df
 
 
-def wildcard_search(
-    pattern: str, items: list | None = None, use_package_data: bool = True
-) -> list:
+def wildcard_search(pattern: str, items: list | None = None, use_package_data: bool = True) -> list:
     """Search for items using regex pattern that can contain wildcard characters.
 
     Parameters
@@ -131,9 +129,7 @@ def wildcard_search(
         items = []
 
         if use_package_data:
-            file_path = os.path.join(
-                os.path.dirname(__file__), "resources", "series.json"
-            )
+            file_path = os.path.join(os.path.dirname(__file__), "resources", "series.json")
 
             with open(file_path, "r") as file:
                 dg_series = json.load(file)

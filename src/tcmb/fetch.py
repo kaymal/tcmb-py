@@ -1,4 +1,5 @@
 """Data fetching module."""
+
 from __future__ import annotations
 
 import requests
@@ -8,9 +9,7 @@ from tcmb import auth, const
 URL = const.BASE_URL
 
 
-def _create_uri(
-    params: dict, endpoint: str | None = None, base_url: str | None = None
-) -> str:
+def _create_uri(params: dict, endpoint: str | None = None, base_url: str | None = None) -> str:
     """Create URI using the params and the evds url.
 
     The official api does not use `?` for query strings.
