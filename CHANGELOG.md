@@ -12,6 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 -
 ### Fixed
 - 
+## [0.4.0] - 2026-02-20
+### Added 
+- Update to EVDS-3.
+- Change from flat to src layout.
+- Add tests
 
 ## [0.3.0] - 2023-04-26
 ### Added 
